@@ -45,6 +45,7 @@ func NewProjectPane(repo repository.ProjectRepository) *ProjectPane {
 		AddItem(pane.newProject, 1, 0, false)
 
 	pane.SetBorder(true).SetTitle("[::u]P[::-]rojects")
+	pane.SetBorderColor(tcell.ColorGold)
 	pane.loadListItems(false)
 
 	return &pane

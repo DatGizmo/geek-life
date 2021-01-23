@@ -72,6 +72,7 @@ func NewTaskPane(projectRepo repository.ProjectRepository, taskRepo repository.T
 		AddItem(pane.hint, 0, 1, false)
 
 	pane.SetBorder(true).SetTitle("[::u]T[::-]asks")
+	pane.SetBorderColor(tcell.ColorRed)
 	pane.setHintMessage()
 
 	return &pane
