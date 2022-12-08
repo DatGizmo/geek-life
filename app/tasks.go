@@ -12,6 +12,8 @@ import (
 
 	"github.com/ajaxray/geek-life/model"
 	"github.com/ajaxray/geek-life/repository"
+	"github.com/ajaxray/geek-life/util"
+	"github.com/ajaxray/geek-life/config"
 )
 
 // TaskPane displays tasks of current TaskList or Project
@@ -104,17 +106,18 @@ func (pane *TaskPane) addTaskToList(i int) *tview.List {
 }
 
 func (pane *TaskPane) handleShortcuts(event *tcell.EventKey) *tcell.EventKey {
-	switch unicode.ToLower(event.Rune()) {
-	case 'j':
+    value := unicode.ToLower(event.Rune())
+	switch {
+    case util.RuneContains(config.GetDownRunes(), value):
 		pane.list.SetCurrentItem(pane.list.GetCurrentItem() + 1)
 		return nil
-	case 'k':
+    case util.RuneContains(config.GetUpRunes(), value):
 		pane.list.SetCurrentItem(pane.list.GetCurrentItem() - 1)
 		return nil
-	case 'h':
+    case util.RuneContains([]rune{'q'}, value):
 		app.SetFocus(projectPane)
 		return nil
-	case 'n':
+    case util.RuneContains([]rune{'n'}, value):
 		app.SetFocus(pane.newTask)
 		return nil
 	}

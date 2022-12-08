@@ -14,6 +14,7 @@ import (
 	"github.com/ajaxray/geek-life/repository"
 	repo "github.com/ajaxray/geek-life/repository/storm"
 	"github.com/ajaxray/geek-life/util"
+	"github.com/ajaxray/geek-life/config"
 )
 
 var (
@@ -45,6 +46,12 @@ func init() {
 func main() {
 	app = tview.NewApplication()
 	flag.Parse()
+
+    config.Init(flag.CommandLine)
+    config.SaveConfig()
+    dbFile = config.GetDbFile()
+    vertical = config.GetVertical()
+    dynamiclist = config.GetDynamic()
 
 	db = util.ConnectStorm(dbFile)
 	defer func() {
@@ -140,7 +147,7 @@ func prepareContentPages() *tview.Flex {
 
 func makeTitleBar() *tview.Flex {
 	titleText := tview.NewTextView().SetText("[lime::b]Geek-life [::-]- Task Manager for geeks!").SetDynamicColors(true)
-	versionInfo := tview.NewTextView().SetText("[::d]Version: 0.1.2").SetTextAlign(tview.AlignRight).SetDynamicColors(true)
+	versionInfo := tview.NewTextView().SetText("[::d]Version: 0.1.2b").SetTextAlign(tview.AlignRight).SetDynamicColors(true)
 
 	return tview.NewFlex().
 		AddItem(titleText, 0, 2, false).

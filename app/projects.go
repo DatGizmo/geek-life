@@ -9,7 +9,9 @@ import (
 	"github.com/rivo/tview"
 
 	"github.com/ajaxray/geek-life/model"
+	"github.com/ajaxray/geek-life/util"
 	"github.com/ajaxray/geek-life/repository"
+	"github.com/ajaxray/geek-life/config"
 )
 
 // ProjectPane Displays projects and dynamic lists
@@ -115,17 +117,18 @@ func (pane *ProjectPane) addSection(name string) {
 }
 
 func (pane *ProjectPane) handleShortcuts(event *tcell.EventKey) *tcell.EventKey {
-	switch unicode.ToLower(event.Rune()) {
-	case 'j':
-		pane.list.SetCurrentItem(pane.list.GetCurrentItem() + 1)
-		return nil
-	case 'k':
-		pane.list.SetCurrentItem(pane.list.GetCurrentItem() - 1)
-		return nil
-	case 'n':
-		app.SetFocus(pane.newProject)
-		return nil
-	}
+    value := unicode.ToLower(event.Rune())
+    switch {
+    case util.RuneContains(config.GetDownRunes(), value):
+        pane.list.SetCurrentItem(pane.list.GetCurrentItem() + 1)
+        return nil
+    case util.RuneContains(config.GetUpRunes(), value):
+        pane.list.SetCurrentItem(pane.list.GetCurrentItem() - 1)
+        return nil
+    case util.RuneContains([]rune{'n'}, value):
+        app.SetFocus(pane.newProject)
+        return nil
+    }
 
 	return event
 }

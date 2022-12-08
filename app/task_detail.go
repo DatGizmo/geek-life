@@ -18,6 +18,7 @@ import (
 	"github.com/ajaxray/geek-life/model"
 	"github.com/ajaxray/geek-life/repository"
 	"github.com/ajaxray/geek-life/util"
+	"github.com/ajaxray/geek-life/config"
 )
 
 const dateLayoutISO = "2006-01-02"
@@ -52,12 +53,12 @@ func NewTaskDetailPane(taskRepo repository.TaskRepository) *TaskDetailPane {
 	toggleHint := tview.NewTextView().SetTextColor(tcell.ColorDimGray).SetText("<space> to toggle")
 	pane.taskStatusToggle.SetSelectedFunc(pane.toggleTaskStatus)
 
-	pane.editorHint = tview.NewTextView().SetText(" e = edit, v = external, ↓↑ = scroll").SetTextColor(tcell.ColorDimGray)
+	pane.editorHint = tview.NewTextView().SetText(" e/i = edit, v = external, ↓↑ = scroll").SetTextColor(tcell.ColorDimGray)
 
 	// Prepare static (no external interaction) elements
 	editorLabel := tview.NewFlex().
 		AddItem(tview.NewTextView().SetText("Task Not[::u]e[::-]:").SetDynamicColors(true), 0, 1, false).
-		AddItem(makeButton("[::u]e[::-]dit", func() { pane.activateEditor() }), 6, 0, false)
+		AddItem(makeButton("ed[::u]i[::-]t", func() { pane.activateEditor() }), 6, 0, false)
 	editorHelp := tview.NewFlex().
 		AddItem(pane.editorHint, 0, 1, false).
 		AddItem(tview.NewTextView().SetTextAlign(tview.AlignRight).
@@ -291,45 +292,59 @@ func writeToTmpFile(content string) (string, error) {
 }
 
 func (td *TaskDetailPane) handleShortcuts(event *tcell.EventKey) *tcell.EventKey {
-	switch event.Key() {
-	case tcell.KeyEsc:
+    eventKey := event.Key()
+	switch {
+    case util.KeysContains([]tcell.Key{tcell.KeyEsc}, eventKey):
 		removeThirdCol()
 		app.SetFocus(taskPane)
 		contents.AddItem(projectDetailPane, 25, 0, false)
 		return nil
-	case tcell.KeyDown:
+    case util.KeysContains(config.GetDownKeys(), eventKey):
 		td.taskDetailView.ScrollDown(1)
 		return nil
-	case tcell.KeyUp:
+    case util.KeysContains(config.GetUpKeys(), eventKey):
 		td.taskDetailView.ScrollUp(1)
 		return nil
-	case tcell.KeyRune:
-		switch unicode.ToLower(event.Rune()) {
-		case 'e':
+    case util.KeysContains([]tcell.Key{tcell.KeyRune}, eventKey):
+        value := unicode.ToLower(event.Rune())
+		switch {
+        case util.RuneContains(config.GetUpRunes(), value):
+            td.taskDetailView.ScrollDown(1)
+            return nil
+        case util.RuneContains(config.GetDownRunes(), value):
+            td.taskDetailView.ScrollUp(1)
+            return nil
+        case util.RuneContains([]rune{'q'}, value):
+            removeThirdCol()
+            app.SetFocus(taskPane)
+            contents.AddItem(projectDetailPane, 25, 0, false)
+            return nil
+        case util.RuneContains([]rune{'i'}, value):
 			td.activateEditor()
 			return nil
-		case 'v':
+        case util.RuneContains([]rune{'v'}, value):
+			td.activateEditor()
 			td.editInExternalEditor()
 			return nil
-		case 'd':
+        case util.RuneContains([]rune{'d'}, value):
 			app.SetFocus(td.taskDate)
 			return nil
-		case 'r':
+        case util.RuneContains([]rune{'r'}, value):
 			td.header.ShowRename()
 			return nil
-		case ' ':
+        case util.RuneContains([]rune{' '}, value):
 			td.toggleTaskStatus()
 			return nil
-		case 'x':
+        case util.RuneContains([]rune{'x'}, value):
 			td.Export()
 			return nil
-		case 'o':
+        case util.RuneContains([]rune{'o'}, value):
 			td.todaySelector()
 			return nil
-		case '+':
+        case util.RuneContains([]rune{'+'}, value):
 			td.nextDaySelector()
 			return nil
-		case '-':
+        case util.RuneContains([]rune{'-'}, value):
 			td.prevDaySelector()
 			return nil
 		}

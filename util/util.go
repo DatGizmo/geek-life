@@ -12,6 +12,7 @@ import (
 
 	"github.com/asdine/storm/v3"
 	"github.com/mitchellh/go-homedir"
+	"github.com/gdamore/tcell/v2"
 )
 
 // ConnectStorm Create database connection
@@ -40,7 +41,13 @@ func ConnectStorm(dbFilePath string) *storm.DB {
 			f, _ := ioutil.TempFile("geek-life", "default.db")
 			dbPath = f.Name()
 		}
-	}
+	} else {
+        dbPath, err = homedir.Expand(dbPath)
+        if err != nil {
+            fmt.Println("Error expanding homedir ", err)
+        }
+    }
+
 
 	CreateDirIfNotExist(path.Dir(dbPath))
 
@@ -90,4 +97,22 @@ func FatalIfError(err error, msgOrPattern string, args ...interface{}) {
 	if LogIfError(err, message) {
 		log.Fatal("FATAL ERROR: Exiting program! - ", message, "\n")
 	}
+}
+
+func RuneContains(s []rune, str rune) bool {
+  for _, v := range s {
+    if v == str {
+      return true
+    }
+  }
+  return false
+}
+
+func KeysContains(s []tcell.Key, str tcell.Key) bool {
+  for _, v := range s {
+    if v == str {
+      return true
+    }
+  }
+  return false
 }
