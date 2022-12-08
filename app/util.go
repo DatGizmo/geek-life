@@ -34,7 +34,7 @@ func makeHorizontalLine(lineChar rune, color tcell.Color) *tview.TextView {
 func makeLightTextInput(placeholder string) *tview.InputField {
 	return tview.NewInputField().
 		SetPlaceholder(placeholder).
-		SetPlaceholderTextColor(tcell.ColorDarkSlateBlue).
+        SetPlaceholderStyle(tcell.StyleDefault.Background(tcell.ColorLightBlue).Foreground(tcell.ColorDarkSlateBlue)).
 		SetFieldTextColor(tcell.ColorBlack).
 		SetFieldBackgroundColor(tcell.ColorLightBlue)
 }
@@ -56,7 +56,7 @@ func makeButton(label string, handler func()) *tview.Button {
 	btn := tview.NewButton(label).SetSelectedFunc(handler).
 		SetLabelColor(tcell.ColorWhite)
 
-	btn.SetBackgroundColor(tcell.ColorCornflowerBlue)
+    btn.SetStyle(tcell.StyleDefault.Background(tcell.ColorCornflowerBlue))
 
 	return btn
 }

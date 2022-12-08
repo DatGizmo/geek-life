@@ -31,7 +31,8 @@ func NewProjectDetailPane() *ProjectDetailPane {
 	deleteBtn := makeButton("[::u]D[::-]elete Project", removeProjectWithConfirmation)
 	clearBtn := makeButton("[::u]C[::-]lear Completed Tasks", clearCompletedWithConfirmation)
 
-	deleteBtn.SetBackgroundColor(tcell.ColorRed)
+    deleteBtn.SetStyle(tcell.StyleDefault.Background(tcell.ColorRed))
+
 	pane.
 		AddItem(deleteBtn, 3, 1, false).
 		AddItem(blankCell, 1, 1, false).
