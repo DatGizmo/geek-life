@@ -191,7 +191,7 @@ func (pane *TaskPane) ActivateTask(idx int) {
 	pane.activeTask = &pane.tasks[idx]
 	taskDetailPane.SetTask(pane.activeTask)
 
-	contents.AddItem(taskDetailPane, 0, 3, false)
+	taskview.AddItem(taskDetailPane, 0, 3, false)
 
 }
 

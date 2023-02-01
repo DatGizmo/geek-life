@@ -74,7 +74,7 @@ func ignoreKeyEvt() bool {
 // }
 
 func removeThirdCol() {
-	contents.RemoveItem(taskDetailPane)
+	taskview.RemoveItem(taskDetailPane)
 	contents.RemoveItem(projectDetailPane)
 }
 

@@ -18,7 +18,7 @@ import (
 
 var (
 	app              *tview.Application
-	layout, contents *tview.Flex
+	layout, contents, taskview *tview.Flex
 
 	statusBar         *StatusBar
 	projectPane       *ProjectPane
@@ -32,10 +32,12 @@ var (
 
 	// Flag variables
 	dbFile string
+    vertical bool
 )
 
 func init() {
 	flag.StringVarP(&dbFile, "db-file", "d", "", "Specify DB file path manually.")
+    flag.BoolVarP(&vertical, "vertical", "v", false, "Vertical task detail layout.")
 }
 
 func main() {
@@ -88,12 +90,12 @@ func setKeyboardShortcuts() *tview.Application {
 		switch unicode.ToLower(event.Rune()) {
 		case 'p':
 			app.SetFocus(projectPane)
-			contents.RemoveItem(taskDetailPane)
+			taskview.RemoveItem(taskDetailPane)
 			return nil
 		case 'q':
 		case 't':
 			app.SetFocus(taskPane)
-			contents.RemoveItem(taskDetailPane)
+			taskview.RemoveItem(taskDetailPane)
 			return nil
 		}
 
@@ -120,9 +122,15 @@ func prepareContentPages() *tview.Flex {
 	projectDetailPane = NewProjectDetailPane()
 	taskDetailPane = NewTaskDetailPane(taskRepo)
 
+    taskview = tview.NewFlex()
+    if(vertical) {
+        taskview.SetDirection(tview.FlexRow)
+    }
+    taskview.AddItem(taskPane, 0, 1, false)
+
 	contents = tview.NewFlex().
 		AddItem(projectPane, 25, 1, true).
-		AddItem(taskPane, 0, 2, false)
+		AddItem(taskview, 0, 2, false)
 
 	return contents
 
