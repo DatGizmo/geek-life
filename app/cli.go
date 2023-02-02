@@ -33,11 +33,13 @@ var (
 	// Flag variables
 	dbFile string
     vertical bool
+    dynamiclist bool
 )
 
 func init() {
 	flag.StringVarP(&dbFile, "db-file", "d", "", "Specify DB file path manually.")
     flag.BoolVarP(&vertical, "vertical", "v", false, "Vertical task detail layout.")
+    flag.BoolVarP(&dynamiclist, "dynamic", "D", false, "Enables the dynamic list")
 }
 
 func main() {

@@ -77,7 +77,9 @@ func (pane *ProjectPane) addDynamicLists() {
 }
 
 func (pane *ProjectPane) addProjectList() {
-	pane.addSection("Projects")
+    if(dynamiclist) {
+        pane.addSection("Projects")
+    }
 	pane.projectListStarting = pane.list.GetItemCount()
 
 	var err error
@@ -155,8 +157,10 @@ func (pane *ProjectPane) RemoveActivateProject() {
 
 func (pane *ProjectPane) loadListItems(focus bool) {
 	pane.list.Clear()
-	pane.addDynamicLists()
-	pane.list.AddItem("", "", 0, nil)
+    if(dynamiclist) {
+        pane.addDynamicLists()
+        pane.list.AddItem("", "", 0, nil)
+    }
 	pane.addProjectList()
 
 	if focus {
